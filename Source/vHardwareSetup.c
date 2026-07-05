@@ -165,5 +165,10 @@ static void prvHardwareSetupTimer(void)
 */
 static void prvHardwareSetupInterrupt(void)
 {
+    __disable_irq();
+    __ISB();
 
+
+
+    __enable_irq();
 }
