@@ -1,0 +1,4 @@
+../Source/vHardwareSetup.c:20:6:vHardwareSetup	8	static
+../Source/vHardwareSetup.c:28:13:prvHardwareSetupSystemClock	8	static
+../Source/vHardwareSetup.c:75:13:prvHardwareSetupPortAndPin	16	static
+../Source/vHardwareSetup.c:96:13:prvHardwareSetupGPIO	4	static

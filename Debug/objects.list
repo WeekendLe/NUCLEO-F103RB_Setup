@@ -1,0 +1,6 @@
+"./Source/main.o"
+"./Source/syscalls.o"
+"./Source/sysmem.o"
+"./Source/system_stm32f1xx.o"
+"./Source/vHardwareSetup.o"
+"./Startup/startup_stm32f103rbtx.o"
