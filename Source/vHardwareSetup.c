@@ -7,13 +7,16 @@
 
 #include "project.h"
 
-// Public variables
+#define TIMER2_FREQUENCY 1000000UL // 1us clock
 
+// Public variables
 
 // Function Prototype
 static void prvHardwareSetupSystemClock(void);
 static void prvHardwareSetupGPIO(void);
 static void prvHardwareSetupPortAndPin(void);
+static void prvHardwareSetupTimer(void);
+static void prvHardwareSetupInterrupt(void);
 
 
 // vHardwareSetup
@@ -22,9 +25,13 @@ void vHardwareSetup(void)
 	prvHardwareSetupSystemClock();
 	prvHardwareSetupPortAndPin();
 	prvHardwareSetupGPIO();
-
+	prvHardwareSetupTimer();
+	prvHardwareSetupInterrupt();
 }
 
+/*
+ *	prvHardwareSetupSystemClock
+*/
 static void prvHardwareSetupSystemClock(void)
 {
 	/* Set FLASH latency */
@@ -69,9 +76,16 @@ static void prvHardwareSetupSystemClock(void)
 	RCC->CFGR |= RCC_CFGR_SW_PLL;			// PLL selected as system clock for now
 	while((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL); // Wait till the SYSCLK is set to PLL
 
+	/* SYSTEM CLOCK IS NOW 72 MHz */
+	/* AHB CLOCK: 72 MHZ */
+	/* APB1 CLOCK: 36 MHz */
+	/* APB2 CLOCK: 72 MHz */
 	SystemCoreClockUpdate();				// Update the SystemCoreClock variable in system_stm32f1xx.c
 }
 
+/*
+ *	prvHardwareSetupPortAndPin
+*/
 static void prvHardwareSetupPortAndPin(void)
 {
 	// Enable all IO ports clock
@@ -93,6 +107,9 @@ static void prvHardwareSetupPortAndPin(void)
 
 }
 
+/*
+ *	prvHardwareSetupGPIO
+*/
 static void prvHardwareSetupGPIO(void)
 {
 	/* Set pin PA5 (port A, pin 5) as general output pin to drive LD2 on the Nucleo board */
@@ -104,4 +121,54 @@ static void prvHardwareSetupGPIO(void)
 	GPIOA->CRL &= ~(GPIO_CRL_CNF5);
 	// Set output as low
 	GPIOA->BSRR = GPIO_BSRR_BR5;
+}
+
+/*
+ *	prvHardwareSetupTimer
+*/
+static void prvHardwareSetupTimer(void)
+{
+	// Configure TIMER2 for Debug console
+	// Enable clock for TIMER2 -> Timer 2 clock input 72 MHz
+	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+	__NOP();
+	// Disable TIMER2 before config
+	TIM2->CR1 &= ~TIM_CR1_CEN;
+	// Set TIMER2 Frequency: 1 ms
+	TIM2->PSC = 71U;	// Counter clock frequency: 72 MHz / (PSC + 1) = 1 MHz
+	TIM2->ARR =	999U;	// Timer output frequency: 1000000 / (999 + 1) = 1000
+	// Auto-reload preload -> ARR is only updated after a cycle to avoid glitch
+	TIM2->CR1 |= TIM_CR1_ARPE;
+	// Count Direction: count up
+	TIM2->CR1 &= ~TIM_CR1_DIR;
+	// One-pulse Mode DISABLED: Timer run forever
+	TIM2->CR1 &= ~TIM_CR1_OPM;
+	// Update Request Source: Only counter overflow generate an update interrupt
+	TIM2->CR1 |= TIM_CR1_URS;
+	// Update Disable: enable event generation
+	TIM2->CR1 &= ~TIM_CR1_UDIS;
+
+    // Force an update event to load PSC and ARR into active registers
+    TIM2->EGR = TIM_EGR_UG;   // generates UEV, loads shadow registers
+    TIM2->SR  &= ~TIM_SR_UIF; // clear the update interrupt flag
+
+	// Enable interrupt generation on update
+	TIM2->DIER = TIM_DIER_UIE;
+
+	// Enable the timer by enable the counter
+	// Can be done in main.c
+	//TIM2->CR1 |= TIM_CR1_CEN;
+}
+
+/*
+ *	prvHardwareSetupInterrupt
+*/
+static void prvHardwareSetupInterrupt(void)
+{
+    __disable_irq();
+    __ISB();
+
+
+
+    __enable_irq();
 }
