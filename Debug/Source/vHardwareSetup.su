@@ -1,5 +1,8 @@
-../Source/vHardwareSetup.c:24:6:vHardwareSetup	8	static
-../Source/vHardwareSetup.c:33:13:prvHardwareSetupSystemClock	8	static
-../Source/vHardwareSetup.c:84:13:prvHardwareSetupPortAndPin	16	static
-../Source/vHardwareSetup.c:105:13:prvHardwareSetupGPIO	4	static
-../Source/vHardwareSetup.c:118:13:prvHardwareSetupTimer	4	static
+../Include/core_cm3.h:1511:22:__NVIC_EnableIRQ	16	static
+../Include/core_cm3.h:1639:22:__NVIC_SetPriority	16	static
+../Source/vHardwareSetup.c:23:6:vHardwareSetup	8	static
+../Source/vHardwareSetup.c:35:13:prvHardwareSetupSystemClock	8	static
+../Source/vHardwareSetup.c:89:13:prvHardwareSetupPortAndPin	16	static
+../Source/vHardwareSetup.c:113:13:prvHardwareSetupGPIO	4	static
+../Source/vHardwareSetup.c:129:13:prvHardwareSetupTimer	4	static,ignoring_inline_asm
+../Source/vHardwareSetup.c:166:13:prvHardwareSetupInterrupt	8	static,ignoring_inline_asm
