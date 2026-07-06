@@ -24,4 +24,5 @@ C_DEPS :=
 SUBDIRS := \
 Source \
 Startup \
+. \
 

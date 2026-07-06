@@ -18,6 +18,7 @@
 
 // Function Prototype
 void vHardwareSetup(void);
+void TIM2_IRQHandler(void);
 
 
 #endif /* PROJECT_H_ */

@@ -168,7 +168,13 @@ static void prvHardwareSetupInterrupt(void)
     __disable_irq();
     __ISB();
 
+    // Set the interrupt priority
+    // This device support 4 bits of interrupt => 16 priority level
+    // 0 - highest, 15 - lowest
+    NVIC_SetPriority(TIM2_IRQn, 15U);
 
+    // Enable the interrupt
+    NVIC_EnableIRQ(TIM2_IRQn);	// Enable TIM2 interrupt
 
     __enable_irq();
 }
