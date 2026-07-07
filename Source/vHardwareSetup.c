@@ -16,8 +16,8 @@ static void prvHardwareSetupSystemClock(void);
 static void prvHardwareSetupGPIO(void);
 static void prvHardwareSetupPortAndPin(void);
 static void prvHardwareSetupTimer(void);
+static void prvHardwareSetupUART(void);
 static void prvHardwareSetupInterrupt(void);
-
 
 // vHardwareSetup
 void vHardwareSetup(void)
@@ -26,6 +26,7 @@ void vHardwareSetup(void)
 	prvHardwareSetupPortAndPin();
 	prvHardwareSetupGPIO();
 	prvHardwareSetupTimer();
+	prvHardwareSetupUART();
 	prvHardwareSetupInterrupt();
 }
 
@@ -84,7 +85,7 @@ static void prvHardwareSetupSystemClock(void)
 }
 
 /*
- *	prvHardwareSetupPortAndPin
+ *	prvHardwareSetupPort
 */
 static void prvHardwareSetupPortAndPin(void)
 {
@@ -109,11 +110,12 @@ static void prvHardwareSetupPortAndPin(void)
 
 /*
  *	prvHardwareSetupGPIO
+ *	Check Table 20, 21 in Chapter 9 - Reference Manual
 */
 static void prvHardwareSetupGPIO(void)
 {
 	/* Set pin PA5 (port A, pin 5) as general output pin to drive LD2 on the Nucleo board */
-	// Reset the PA5 control fields
+	// Reset PA5 control fields
 	GPIOA->CRL &= ~(GPIO_CRL_MODE5 | GPIO_CRL_CNF5);
 	// Configure pin PA5 as output with 2MHz drive strength
 	GPIOA->CRL |= GPIO_CRL_MODE5_1;
@@ -121,6 +123,29 @@ static void prvHardwareSetupGPIO(void)
 	GPIOA->CRL &= ~(GPIO_CRL_CNF5);
 	// Set output as low
 	GPIOA->BSRR = GPIO_BSRR_BR5;
+
+	/* Set pin PA2 as USART2_TX */
+	// Reset PA2 control fields
+	GPIOA->CRL &= ~(GPIO_CRL_MODE2 | GPIO_CRL_CNF2);
+	// Configure PA2 as output with 50 MHz drive strength
+	GPIOA->CRL |= GPIO_CRL_MODE2; // 11
+	// Configure pin PA2 as Alternate function output push-pull
+	// MAKE SURE THAT ONLY ONE PERIPHERAL IS CONNECTED TO THE PIN
+	// In this case, USART2_TX
+	GPIOA->CRL |= GPIO_CRL_CNF2_1; // 10
+
+
+	/* Set pin PA3 as USART2_RX */
+	// Reset PA3 control fields
+	GPIOA->CRL &= ~(GPIO_CRL_MODE3 | GPIO_CRL_CNF3);
+	// Configure PA3 as input mode
+	GPIOA->CRL &= ~(GPIO_CRL_MODE3); // 00
+	// Configure pin PA3 as Input with pull-up
+	// MAKE SURE THAT ONLY ONE PERIPHERAL IS CONNECTED TO THE PIN
+	// In this case, USART2_RX
+	GPIOA->CRL |= GPIO_CRL_CNF3_1; // 10
+	// Activate pull-up resistor
+	GPIOA->ODR |= GPIO_ODR_ODR3; // 1
 }
 
 /*
@@ -177,4 +202,16 @@ static void prvHardwareSetupInterrupt(void)
     NVIC_EnableIRQ(TIM2_IRQn);	// Enable TIM2 interrupt
 
     __enable_irq();
+}
+
+/*
+ *	prvHardwareSetupUART
+*/
+static void prvHardwareSetupUART( void )
+{
+	/*
+	 *	Configure UART2
+	 *	Pins PA2 (TX) and PA3 (RX) are routed to the ST-Link Virtual COM port,
+	 *  which appears as a serial terminal on the PC.
+	 */
 }

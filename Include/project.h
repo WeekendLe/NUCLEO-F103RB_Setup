@@ -11,7 +11,7 @@
 // C library
 #include <stdint.h>
 
-// STM32F103RBT6 CMSIS
+// STM32F103RBT6 CMSIS Header
 #include "stm32f1xx.h"
 
 // Device library
