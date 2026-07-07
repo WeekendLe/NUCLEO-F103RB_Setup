@@ -2,7 +2,9 @@
 ** by LE-NGUYEN ANH-TUAN
 **       (WEEKEND LE)
 **
-** NOTICE: This project is setup for the STM Nucleo Board
+** Date: 2026-07-04
+**
+** NOTICE: This project is setup for the STM Nucleo-F103RB Board
 **
 **/
 
