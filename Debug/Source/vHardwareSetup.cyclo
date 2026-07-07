@@ -1,8 +1,9 @@
 ../Include/core_cm3.h:1511:22:__NVIC_EnableIRQ	2
 ../Include/core_cm3.h:1639:22:__NVIC_SetPriority	2
 ../Source/vHardwareSetup.c:23:6:vHardwareSetup	1
-../Source/vHardwareSetup.c:35:13:prvHardwareSetupSystemClock	5
-../Source/vHardwareSetup.c:89:13:prvHardwareSetupPortAndPin	2
-../Source/vHardwareSetup.c:113:13:prvHardwareSetupGPIO	1
-../Source/vHardwareSetup.c:129:13:prvHardwareSetupTimer	1
-../Source/vHardwareSetup.c:166:13:prvHardwareSetupInterrupt	1
+../Source/vHardwareSetup.c:36:13:prvHardwareSetupSystemClock	5
+../Source/vHardwareSetup.c:90:13:prvHardwareSetupPortAndPin	2
+../Source/vHardwareSetup.c:115:13:prvHardwareSetupGPIO	1
+../Source/vHardwareSetup.c:154:13:prvHardwareSetupTimer	1
+../Source/vHardwareSetup.c:191:13:prvHardwareSetupInterrupt	1
+../Source/vHardwareSetup.c:210:13:prvHardwareSetupUART	1
