@@ -25,6 +25,10 @@ static volatile uint32_t ulTimer2Counter = 0UL;
 /* Main Function */
 int main(void)
 {
+	// Disable global interrupt
+	__disable_irq();
+	__ISB();
+
 	vHardwareSetup();
 
 	// Turn LED on
@@ -32,6 +36,9 @@ int main(void)
 
 	// Turn TIMER2 ON
 	TIM2->CR1 |= TIM_CR1_CEN;
+
+	// Enable global interrupt
+	__enable_irq();
 
 	while(1)
 	{

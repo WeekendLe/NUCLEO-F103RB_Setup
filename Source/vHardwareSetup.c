@@ -201,7 +201,8 @@ static void prvHardwareSetupInterrupt(void)
     // Enable the interrupt
     NVIC_EnableIRQ(TIM2_IRQn);	// Enable TIM2 interrupt
 
-    __enable_irq();
+    // Enable in main
+    //__enable_irq();
 }
 
 /*
