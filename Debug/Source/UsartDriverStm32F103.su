@@ -1,0 +1,2 @@
+../Source/UsartDriverStm32F103.c:32:6:vWriteUSART	16	static
+../Source/UsartDriverStm32F103.c:70:6:vMsgToSend	24	static

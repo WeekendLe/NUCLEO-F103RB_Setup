@@ -18,7 +18,6 @@
 /* Public variables */
 static volatile uint32_t ulTimer2Counter = 0UL;
 
-
 /* Function prototype */
 
 
@@ -66,6 +65,7 @@ void TIM2_IRQHandler( void )
 	{
 		GPIOA->BSRR = GPIO_BSRR_BR5; // Turn LED OFF
 		ulTimer2Counter = 0UL;
+		vMsgToSend("Hello World!\r\n");
 	}
 
 	// Clear TIMER2 Interrupt Flag
@@ -77,5 +77,16 @@ void TIM2_IRQHandler( void )
  */
 void USART2_IRQHandler( void )
 {
+	/*
+	 *  Check for status flag to make sure that this is an TX Interrupt
+	 *  AND check if TX Interrupt is enabled
+	 */
+	if ((USART2->SR & USART_SR_TXE) && (USART2->CR1 & USART_CR1_TXEIE))
+	    {
+	        vWriteUSART();
+	    }
 
+	/*
+	 *  According to the Manual, INT Flag for USART is cleared by hardware
+	 */
 }

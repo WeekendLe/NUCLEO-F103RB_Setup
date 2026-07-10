@@ -5,18 +5,21 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Source/UsartDriverStm32F103.c \
 ../Source/syscalls.c \
 ../Source/sysmem.c \
 ../Source/system_stm32f1xx.c \
 ../Source/vHardwareSetup.c 
 
 OBJS += \
+./Source/UsartDriverStm32F103.o \
 ./Source/syscalls.o \
 ./Source/sysmem.o \
 ./Source/system_stm32f1xx.o \
 ./Source/vHardwareSetup.o 
 
 C_DEPS += \
+./Source/UsartDriverStm32F103.d \
 ./Source/syscalls.d \
 ./Source/sysmem.d \
 ./Source/system_stm32f1xx.d \
@@ -30,7 +33,7 @@ Source/%.o Source/%.su Source/%.cyclo: ../Source/%.c Source/subdir.mk
 clean: clean-Source
 
 clean-Source:
-	-$(RM) ./Source/syscalls.cyclo ./Source/syscalls.d ./Source/syscalls.o ./Source/syscalls.su ./Source/sysmem.cyclo ./Source/sysmem.d ./Source/sysmem.o ./Source/sysmem.su ./Source/system_stm32f1xx.cyclo ./Source/system_stm32f1xx.d ./Source/system_stm32f1xx.o ./Source/system_stm32f1xx.su ./Source/vHardwareSetup.cyclo ./Source/vHardwareSetup.d ./Source/vHardwareSetup.o ./Source/vHardwareSetup.su
+	-$(RM) ./Source/UsartDriverStm32F103.cyclo ./Source/UsartDriverStm32F103.d ./Source/UsartDriverStm32F103.o ./Source/UsartDriverStm32F103.su ./Source/syscalls.cyclo ./Source/syscalls.d ./Source/syscalls.o ./Source/syscalls.su ./Source/sysmem.cyclo ./Source/sysmem.d ./Source/sysmem.o ./Source/sysmem.su ./Source/system_stm32f1xx.cyclo ./Source/system_stm32f1xx.d ./Source/system_stm32f1xx.o ./Source/system_stm32f1xx.su ./Source/vHardwareSetup.cyclo ./Source/vHardwareSetup.d ./Source/vHardwareSetup.o ./Source/vHardwareSetup.su
 
 .PHONY: clean-Source
 

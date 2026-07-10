@@ -9491,7 +9491,7 @@ typedef struct
 #define USART_CR1_TCIE                      USART_CR1_TCIE_Msk                 /*!< Transmission Complete Interrupt Enable */
 #define USART_CR1_TXEIE_Pos                 (7U)                               
 #define USART_CR1_TXEIE_Msk                 (0x1UL << USART_CR1_TXEIE_Pos)      /*!< 0x00000080 */
-#define USART_CR1_TXEIE                     USART_CR1_TXEIE_Msk                /*!< PE Interrupt Enable */
+#define USART_CR1_TXEIE                     USART_CR1_TXEIE_Msk                /*!< TE Interrupt Enable */
 #define USART_CR1_PEIE_Pos                  (8U)                               
 #define USART_CR1_PEIE_Msk                  (0x1UL << USART_CR1_PEIE_Pos)       /*!< 0x00000100 */
 #define USART_CR1_PEIE                      USART_CR1_PEIE_Msk                 /*!< PE Interrupt Enable */

@@ -1,3 +1,4 @@
+"./Source/UsartDriverStm32F103.o"
 "./Source/syscalls.o"
 "./Source/sysmem.o"
 "./Source/system_stm32f1xx.o"
