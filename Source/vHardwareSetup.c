@@ -154,9 +154,14 @@ static void prvHardwareSetupGPIO(void)
 static void prvHardwareSetupTimer(void)
 {
 	// Configure TIMER2 for Debug console
-	// Enable clock for TIMER2 -> Timer 2 clock input 72 MHz
+	// Enable clock for TIMER2 -> Timer 2 input clock 72 MHz
 	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
 	__NOP();
+	// Reset TIMER2 peripheral
+	RCC->APB1RSTR |= RCC_APB1RSTR_TIM2RST;
+	__NOP();
+	// Release TIMER2 peripheral from Reset
+	RCC->APB1RSTR &= ~(RCC_APB1RSTR_TIM2RST);
 	// Disable TIMER2 before config
 	TIM2->CR1 &= ~TIM_CR1_CEN;
 	// Set TIMER2 Frequency: 1 ms
@@ -186,6 +191,52 @@ static void prvHardwareSetupTimer(void)
 }
 
 /*
+ *	prvHardwareSetupUART
+*/
+static void prvHardwareSetupUART( void )
+{
+	/*
+	 *	Configure UART2
+	 *	Pins PA2 (TX) and PA3 (RX) are routed to the ST-Link Virtual COM port,
+	 *  which appears as a serial terminal on the PC.
+	 *  USART2:
+	 *  115200 baud
+	 *  1 stop bit, No parity, 8 char bits, Async mode, Idle-line protocol
+	 */
+
+	// Enable USART2 clock
+	RCC->APB1ENR |= RCC_APB1ENR_USART2EN; // USART2 input clock 36 MHz
+	__NOP();
+	// Reset USART2 peripheral
+	RCC->APB1RSTR |= RCC_APB1RSTR_USART2RST;
+	__NOP();
+	// Release USART2 peripheral from Reset
+	RCC->APB1RSTR &= ~(RCC_APB1RSTR_USART2RST);
+	// Disable USART2
+	USART2->CR1 &= ~(USART_CR1_UE);
+	// Baud rate set
+	/* Calculate baud rate:
+	 * (36000000 / 115200) = 19.53125
+	 * Mantissa = 19 (0x13),
+	 * Fraction Index Slot = 0.53125 * 16 = 8.5 -> Rounded to 9
+	 * */
+	USART2->BRR = (19UL << 4UL) | (9UL);
+	// Set USART2 data characteristic:
+	USART2->CR1 &= ~(USART_CR1_M); // 1 Start Bit, 8 Data Bit
+	USART2->CR1 &= ~(USART_CR1_WAKE); // Idle-Line
+	USART2->CR1 &= ~(USART_CR1_PCE); // Disable Parity
+	USART2->CR2 &= ~(USART_CR2_STOP); // 1 Stop Bit
+	// Receive Interrupt enable
+	USART2->CR1 |= USART_CR1_RXNEIE;
+	// Transmitter enable
+	USART2->CR1 |= USART_CR1_TE;
+	// Receiver enable
+	USART2->CR1 |= USART_CR1_RE;
+	// Enable USART2 -> In Main
+	//USART2->CR1 |= USART_CR1_UE;
+}
+
+/*
  *	prvHardwareSetupInterrupt
 */
 static void prvHardwareSetupInterrupt(void)
@@ -197,21 +248,12 @@ static void prvHardwareSetupInterrupt(void)
     // This device support 4 bits of interrupt => 16 priority level
     // 0 - highest, 15 - lowest
     NVIC_SetPriority(TIM2_IRQn, 15U);
+    NVIC_SetPriority(USART2_IRQn, 14U);
 
     // Enable the interrupt
-    NVIC_EnableIRQ(TIM2_IRQn);	// Enable TIM2 interrupt
+    NVIC_EnableIRQ(TIM2_IRQn);	// Enable TIM2 Interrupt
+    NVIC_EnableIRQ(USART2_IRQn); // Enable USART2 Interrupt
 
-    __enable_irq();
-}
-
-/*
- *	prvHardwareSetupUART
-*/
-static void prvHardwareSetupUART( void )
-{
-	/*
-	 *	Configure UART2
-	 *	Pins PA2 (TX) and PA3 (RX) are routed to the ST-Link Virtual COM port,
-	 *  which appears as a serial terminal on the PC.
-	 */
+    // Enable in main
+    //__enable_irq();
 }
