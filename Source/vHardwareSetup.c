@@ -216,7 +216,7 @@ static void prvHardwareSetupUART( void )
 	USART2->CR1 &= ~(USART_CR1_UE);
 	// Baud rate set
 	/* Calculate baud rate:
-	 * (36000000 / 115200) = 19.53125
+	 * (36000000 / 115200) / 16 = 19.53125
 	 * Mantissa = 19 (0x13),
 	 * Fraction Index Slot = 0.53125 * 16 = 8.5 -> Rounded to 9
 	 * */
@@ -228,6 +228,8 @@ static void prvHardwareSetupUART( void )
 	USART2->CR2 &= ~(USART_CR2_STOP); // 1 Stop Bit
 	// Receive Interrupt enable
 	USART2->CR1 |= USART_CR1_RXNEIE;
+	// Transmit Interrupt also used in this project
+	USART2->CR1 &= ~(USART_CR1_TXEIE); // DISABLED, placed here for visibility
 	// Transmitter enable
 	USART2->CR1 |= USART_CR1_TE;
 	// Receiver enable
