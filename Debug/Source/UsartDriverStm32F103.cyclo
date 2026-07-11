@@ -1,2 +1,5 @@
-../Source/UsartDriverStm32F103.c:32:6:vWriteUSART	3
-../Source/UsartDriverStm32F103.c:70:6:vMsgToSend	4
+../Source/UsartDriverStm32F103.c:33:6:USART2_IRQHandler	9
+../Source/UsartDriverStm32F103.c:90:6:vWriteUSART	3
+../Source/UsartDriverStm32F103.c:128:6:vMsgToSend	4
+../Source/UsartDriverStm32F103.c:165:6:xReadUSART	21
+../Source/UsartDriverStm32F103.c:298:6:vPrintWelcomeBanner	5

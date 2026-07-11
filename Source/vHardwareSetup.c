@@ -234,6 +234,8 @@ static void prvHardwareSetupUART( void )
 	USART2->CR1 |= USART_CR1_TE;
 	// Receiver enable
 	USART2->CR1 |= USART_CR1_RE;
+	// Clear Data register
+	USART2->DR = 0x0000UL;
 	// Enable USART2 -> In Main
 	//USART2->CR1 |= USART_CR1_UE;
 }

@@ -6,4 +6,4 @@
 ../Source/vHardwareSetup.c:115:13:prvHardwareSetupGPIO	1
 ../Source/vHardwareSetup.c:154:13:prvHardwareSetupTimer	1
 ../Source/vHardwareSetup.c:196:13:prvHardwareSetupUART	1
-../Source/vHardwareSetup.c:244:13:prvHardwareSetupInterrupt	1
+../Source/vHardwareSetup.c:246:13:prvHardwareSetupInterrupt	1

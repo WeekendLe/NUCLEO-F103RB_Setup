@@ -42,9 +42,22 @@ int main(void)
 	// Enable global interrupt
 	__enable_irq();
 
+	vMsgToSend("Hello World!\r\n");
+	vPrintWelcomeBanner();
+
 	while(1)
 	{
-
+        /* Main loop processing */
+        char cRxBuffer[64];
+        if (xReadUSART(cRxBuffer, 64))
+        {
+            if (cRxBuffer[0] != '\0')   // Only print non-empty lines
+            {
+                vMsgToSend("Received: ");
+                vMsgToSend(cRxBuffer);
+                vMsgToSend("\r\n");
+            }
+        }
 	}
 
 	return 0;
@@ -70,23 +83,4 @@ void TIM2_IRQHandler( void )
 
 	// Clear TIMER2 Interrupt Flag
 	TIM2->SR = 0x0000U;
-}
-
-/*
- *	USART2 Interrupt Handler
- */
-void USART2_IRQHandler( void )
-{
-	/*
-	 *  Check for status flag to make sure that this is an TX Interrupt
-	 *  AND check if TX Interrupt is enabled
-	 */
-	if ((USART2->SR & USART_SR_TXE) && (USART2->CR1 & USART_CR1_TXEIE))
-	    {
-	        vWriteUSART();
-	    }
-
-	/*
-	 *  According to the Manual, INT Flag for USART is cleared by hardware
-	 */
 }

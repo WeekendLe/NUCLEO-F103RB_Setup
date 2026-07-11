@@ -6,4 +6,4 @@
 ../Source/vHardwareSetup.c:115:13:prvHardwareSetupGPIO	4	static
 ../Source/vHardwareSetup.c:154:13:prvHardwareSetupTimer	4	static,ignoring_inline_asm
 ../Source/vHardwareSetup.c:196:13:prvHardwareSetupUART	4	static,ignoring_inline_asm
-../Source/vHardwareSetup.c:244:13:prvHardwareSetupInterrupt	8	static,ignoring_inline_asm
+../Source/vHardwareSetup.c:246:13:prvHardwareSetupInterrupt	8	static,ignoring_inline_asm
