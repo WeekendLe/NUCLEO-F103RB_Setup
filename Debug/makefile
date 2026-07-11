@@ -61,7 +61,7 @@ main-build: NUCLEO-F103RB_Setup.elf secondary-outputs
 
 # Tool invocations
 NUCLEO-F103RB_Setup.elf NUCLEO-F103RB_Setup.map: $(OBJS) $(USER_OBJS) D:\Documents\Power_Electronic\Firmware\cubeWorkSpace\NUCLEO-F103RB_Setup\STM32F103RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "NUCLEO-F103RB_Setup.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Documents\Power_Electronic\Firmware\cubeWorkSpace\NUCLEO-F103RB_Setup\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="NUCLEO-F103RB_Setup.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "NUCLEO-F103RB_Setup.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Documents\Power_Electronic\Firmware\cubeWorkSpace\NUCLEO-F103RB_Setup\STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="NUCLEO-F103RB_Setup.map" -Wl,--gc-sections -static -Wl,--print-memory-usage --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

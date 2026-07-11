@@ -2495,7 +2495,6 @@ void TIM2_IRQHandler( void )
  800105c:	f143 0500 	adc.w	r5, r3, #0
  8001060:	4b07      	ldr	r3, [pc, #28]	@ (8001080 <TIM2_IRQHandler+0x80>)
  8001062:	e9c3 4500 	strd	r4, r5, [r3]
-
 	}
 
 	// Clear TIMER2 Interrupt Flag
