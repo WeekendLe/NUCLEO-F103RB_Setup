@@ -1,2 +1,5 @@
-../Source/UsartDriverStm32F103.c:32:6:vWriteUSART	16	static
-../Source/UsartDriverStm32F103.c:70:6:vMsgToSend	24	static
+../Source/UsartDriverStm32F103.c:33:6:USART2_IRQHandler	16	static
+../Source/UsartDriverStm32F103.c:90:6:vWriteUSART	16	static
+../Source/UsartDriverStm32F103.c:128:6:vMsgToSend	24	static
+../Source/UsartDriverStm32F103.c:165:6:xReadUSART	32	static
+../Source/UsartDriverStm32F103.c:298:6:vPrintWelcomeBanner	8	static

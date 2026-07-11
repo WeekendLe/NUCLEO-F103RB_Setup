@@ -58,14 +58,11 @@ extern char cFractionalString[FRACTIONAL_TO_STRING_SIZE];
 // Add drop the byte into hardware TX Buffer
 void vWriteUSART(void);
 
-// Add each char into the software TX Ring Buffer
-void vPutCharTxRingBuffer(unsigned char ucData);
-
 // Message to send -> Add the string into the Software TX Ring Buffer
 void vMsgToSend(const char * const pcMsg);
 
-// Process the "raw" software RX Ring Buffer, and update the command buffer if possible
-bool xReadSCI(char * const pcBuffer, uint16_t usBufferSize);
+// Process the "raw" software RX Ring Buffer, and update the given buffer
+bool xReadUSART(char * const pcBuffer, uint16_t usBufferSize);
 
 // Welcome banner print
 void vPrintWelcomeBanner(void);

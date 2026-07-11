@@ -11,6 +11,7 @@
 // C library
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 // STM32F103RBT6 CMSIS Header
 #include "stm32f1xx.h"
