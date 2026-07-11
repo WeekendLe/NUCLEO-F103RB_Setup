@@ -17,6 +17,7 @@
 
 /* Public variables */
 static volatile uint32_t ulTimer2Counter = 0UL;
+static volatile uint64_t ullSecond = 0UL;
 
 /* Function prototype */
 
@@ -48,6 +49,7 @@ int main(void)
 	while(1)
 	{
         /* Main loop processing */
+
         char cRxBuffer[64];
         if (xReadUSART(cRxBuffer, 64))
         {
@@ -58,6 +60,7 @@ int main(void)
                 vMsgToSend("\r\n");
             }
         }
+
 	}
 
 	return 0;
@@ -74,11 +77,15 @@ void TIM2_IRQHandler( void )
 	{
 		GPIOA->BSRR = GPIO_BSRR_BS5; // Turn LED ON
 	}
-	if( ulTimer2Counter == 1000UL )
+	if( ulTimer2Counter > 1000UL )
 	{
-		GPIOA->BSRR = GPIO_BSRR_BR5; // Turn LED OFF
 		ulTimer2Counter = 0UL;
-		vMsgToSend("Hello World!\r\n");
+		GPIOA->BSRR = GPIO_BSRR_BR5; // Turn LED OFF
+		vMsgToSend("Timer Loop Count: ");
+		vUint64ToString(ullSecond, cUint64String);
+		vMsgToSend(cUint64String);
+		vMsgToSend("\r\n");
+		ullSecond = ullSecond + 1ULL;
 	}
 
 	// Clear TIMER2 Interrupt Flag

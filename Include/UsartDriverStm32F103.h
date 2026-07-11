@@ -68,10 +68,10 @@ bool xReadUSART(char * const pcBuffer, uint16_t usBufferSize);
 void vPrintWelcomeBanner(void);
 
 // Convert number to string functions
-void vUint16ToString(uint16_t value, char *buffer);
-void vInt16ToString(int16_t value, char *buffer);
-void vUint32ToString(uint32_t value, char *buffer);
-void vInt32ToString(int32_t value, char *buffer);
+void vUint16ToString(uint16_t value, char *buffer);		// Not implemented
+void vInt16ToString(int16_t value, char *buffer);		// Not implemented
+void vUint32ToString(uint32_t value, char *buffer);		// Not implemented
+void vInt32ToString(int32_t value, char *buffer);		// Not implemented
 void vUint64ToString(uint64_t value, char *buffer);
 void vInt64ToString(int64_t value, char *buffer);
 void vFractionalToString(double value, char *buffer);
