@@ -3,3 +3,6 @@
 ../Source/UsartDriverStm32F103.c:128:6:vMsgToSend	24	static
 ../Source/UsartDriverStm32F103.c:165:6:xReadUSART	32	static
 ../Source/UsartDriverStm32F103.c:298:6:vPrintWelcomeBanner	8	static
+../Source/UsartDriverStm32F103.c:318:6:vUint64ToString	56	static
+../Source/UsartDriverStm32F103.c:348:6:vInt64ToString	40	static
+../Source/UsartDriverStm32F103.c:363:6:vFractionalToString	120	static

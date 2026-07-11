@@ -130,8 +130,8 @@ void vMsgToSend( const char * const pcMsg )
 
 	uint16_t usIdx = 0U;
 
-    /* CRITICAL SECTION START: Disable both USART TX and RX interrupts */
-    USART2->CR1 &= ~(USART_CR1_TXEIE | USART_CR1_RXNEIE);
+    /* CRITICAL SECTION START */
+	USART2->CR1 &= ~(USART_CR1_TXEIE | USART_CR1_RXNEIE);
 
 	while( pcMsg[usIdx] != '\0' )
 	{
@@ -158,7 +158,7 @@ void vMsgToSend( const char * const pcMsg )
     /* CRITICAL SECTION END: Re-enable both interrupts.
      * - TXEIE: starts transmission (ISR will fire if TXE is set)
      * - RXNEIE: restores the echo functionality */
-    USART2->CR1 |= (USART_CR1_TXEIE | USART_CR1_RXNEIE);
+	USART2->CR1 |= (USART_CR1_TXEIE | USART_CR1_RXNEIE);
 }
 
 // xReadUSART
@@ -310,4 +310,154 @@ void vPrintWelcomeBanner( void )
 	vMsgToSend("                   > ^ <                   \r\n");
 	while (usTxHead != usTxTail) { }
 	while (!(USART2->SR & USART_SR_TC)) { }
+}
+
+/*
+ *  HELPER FUNCTION TO CONVERT INT AND DOUBLE INTO STRING
+ */
+void vUint64ToString(uint64_t value, char *buffer)
+{
+	uint16_t i = 0U;
+	uint16_t j = 0U;
+	char temp[UINT64_TO_STRING_SIZE];
+
+	if( value == 0U )
+	{
+		buffer[0U] = '0';
+		buffer[1U] = '\0';
+		return;
+	}
+
+	while( value > 0U )
+	{
+		temp[i] = '0' + (value % 10U);
+		value = value / 10U;
+		i = i + 1U;
+	}
+
+	// Reserve the ordering to store to actual buffer
+	while( i > 0U )
+	{
+		i = i - 1U;
+		buffer[j] = temp[i];
+		j = j + 1U;
+	}
+	buffer[j] = '\0';
+}
+
+void vInt64ToString(int64_t value, char *buffer)
+{
+	if (value < 0)
+    {
+        buffer[0] = '-';
+        /* Cast to unsigned first then negate to safely invert INT64_MIN (-2^63) */
+        uint64_t ullAbsValue = -(uint64_t)value;
+        vUint64ToString(ullAbsValue, buffer + 1);
+    }
+    else
+    {
+        vUint64ToString((uint64_t)value, buffer);
+    }
+}
+
+void vFractionalToString(double value, char *buffer)
+{
+	// Value = (+-)XXXXXXXXX.YYYY
+
+	// Check value limit
+	if( value > 999999999.9999 )
+	{
+        const char msg[] = "OVER MAXIMUM";
+        uint16_t i = 0U;
+        while (msg[i] != '\0')
+        {
+            buffer[i] = msg[i];
+            i++;
+        }
+        buffer[i] = '\0';
+        return;
+	}
+	if( value < -999999999.9999)
+	{
+        const char msg[] = "UNDER MINIMUM";
+        uint16_t i = 0U;
+        while (msg[i] != '\0')
+        {
+            buffer[i] = msg[i];
+            i++;
+        }
+        buffer[i] = '\0';
+        return;
+	}
+
+	// Seperate value into:
+	// Integer part (+-)XXXXXXXXX
+	int32_t lIntPart = (int32_t)value;
+	// Fractional part 0.YYYY
+	double dFrac = value - (double)lIntPart;
+	if( dFrac < 0.0 )
+	{
+		dFrac = -dFrac;
+	}
+	// Convert 0.YYYY into YYYY (no rounding)
+	uint16_t usFracPart = (uint16_t)( dFrac * 10000.0);
+	if( usFracPart > 9999U )
+	{
+    usFracPart = 9999U;   // clamp to maximum valid fraction
+	}
+
+	// Convert Integer part into String
+	char cIntString[INT32_TO_STRING_SIZE];
+	vInt32ToString(lIntPart, cIntString);
+
+	// Convert Fractional part into String
+	char cFracString[UINT16_TO_STRING_SIZE];
+	vUint16ToString(usFracPart, cFracString);
+
+	// Combine the two parts into output buffer
+	uint16_t usBufIdx = 0U;
+	uint16_t i = 0U;
+
+	// Add Integer part
+	while( cIntString[i] != '\0' )
+	{
+		buffer[usBufIdx] = cIntString[i];
+		usBufIdx = usBufIdx + 1U;
+		i = i + 1U;
+	}
+
+	// Add the "."
+	buffer[usBufIdx] = '.';
+	usBufIdx = usBufIdx + 1U;
+
+	// Calculate how many zeros needed in the fractional part
+	// Example: 0.000X, 0.00XX, 0.0XXX
+	uint16_t usFracLen = 0U;
+
+	while( cFracString[usFracLen] != '\0' )
+	{
+		usFracLen = usFracLen + 1U;
+	}
+
+	uint16_t usZeroNeeded = 4U - usFracLen;
+
+	// Add the zeros needed
+	while( usZeroNeeded > 0U )
+	{
+		buffer[usBufIdx] = '0';
+		usBufIdx = usBufIdx + 1U;
+		usZeroNeeded = usZeroNeeded - 1U;
+	}
+
+	// Add the fractional part
+	i = 0U;
+	while( cFracString[i] != '\0' )
+	{
+		buffer[usBufIdx] = cFracString[i];
+		usBufIdx = usBufIdx + 1U;
+		i = i + 1U;
+	}
+
+	// Add the terminator
+	buffer[usBufIdx] = '\0';
 }
