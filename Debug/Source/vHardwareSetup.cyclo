@@ -3,7 +3,7 @@
 ../Source/vHardwareSetup.c:23:6:vHardwareSetup	1
 ../Source/vHardwareSetup.c:36:13:prvHardwareSetupSystemClock	5
 ../Source/vHardwareSetup.c:90:13:prvHardwareSetupPortAndPin	2
-../Source/vHardwareSetup.c:115:13:prvHardwareSetupGPIO	1
-../Source/vHardwareSetup.c:154:13:prvHardwareSetupTimer	1
-../Source/vHardwareSetup.c:196:13:prvHardwareSetupUART	1
-../Source/vHardwareSetup.c:246:13:prvHardwareSetupInterrupt	1
+../Source/vHardwareSetup.c:117:13:prvHardwareSetupGPIO	1
+../Source/vHardwareSetup.c:173:13:prvHardwareSetupTimer	1
+../Source/vHardwareSetup.c:215:13:prvHardwareSetupUART	1
+../Source/vHardwareSetup.c:265:13:prvHardwareSetupInterrupt	1

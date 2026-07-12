@@ -62,7 +62,6 @@ int main(void)
         }
 
 	}
-
 	return 0;
 }
 
@@ -73,14 +72,15 @@ void TIM2_IRQHandler( void )
 {
 	ulTimer2Counter = ulTimer2Counter + 1UL;
 
+
 	if( ulTimer2Counter == 500UL )
 	{
-		GPIOA->BSRR = GPIO_BSRR_BS5; // Turn LED ON
+		//GPIOA->BSRR = GPIO_BSRR_BS5; // Turn LED ON
 	}
 	if( ulTimer2Counter > 1000UL )
 	{
 		ulTimer2Counter = 0UL;
-		GPIOA->BSRR = GPIO_BSRR_BR5; // Turn LED OFF
+		//GPIOA->BSRR = GPIO_BSRR_BR5; // Turn LED OFF
 		vMsgToSend("Timer Loop Count: ");
 		vUint64ToString(ullSecond, cUint64String);
 		vMsgToSend(cUint64String);
@@ -90,4 +90,38 @@ void TIM2_IRQHandler( void )
 
 	// Clear TIMER2 Interrupt Flag
 	TIM2->SR = 0x0000U;
+}
+
+/*
+ *	EXTI13 ISR:
+ *	React to button press (falling edge) event
+ */
+void EXTI15_10_IRQHandler( void )
+{
+	/* Verify that EXTI Line 13 triggered the ISR as this interrupt is shared by Line 10 - 15 */
+	if( (EXTI->PR & EXTI_PR_PR13) != 0UL )
+	{
+
+
+		// Read PC13 state - 0 means pressed
+		if( (GPIOC->IDR & GPIO_IDR_IDR13) == 0U )
+		{
+			static uint8_t ucLedState = 0U; // Check LED State
+			if( ucLedState == 0U )
+			{
+				GPIOA->BSRR = GPIO_BSRR_BS5; // Turn LED ON
+				ucLedState = 1U;
+				vMsgToSend("Button pressed: LED ON\r\n");
+			}
+			else
+			{
+				GPIOA->BSRR = GPIO_BSRR_BR5; // Turn LED OFF
+				ucLedState = 0U;
+				vMsgToSend("Button pressed: LED OFF\r\n");
+			}
+		}
+		/* Clear EXTI Line 13 ISR */
+		EXTI->PR = EXTI_PR_PR13;
+	}
+
 }

@@ -91,21 +91,23 @@ static void prvHardwareSetupPortAndPin(void)
 {
 	// Enable all IO ports clock
 	RCC->APB2ENR |= RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN
-				  | RCC_APB2ENR_IOPDEN | RCC_APB2ENR_IOPEEN;
+				  | RCC_APB2ENR_IOPDEN | RCC_APB2ENR_IOPEEN
+				  | RCC_APB2ENR_AFIOEN;
 	// Wait for IO ports clock to stable
 	volatile uint32_t temp = (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN | RCC_APB2ENR_IOPCEN
-				   | RCC_APB2ENR_IOPDEN | RCC_APB2ENR_IOPEEN);
+				   	   	   | RCC_APB2ENR_IOPDEN | RCC_APB2ENR_IOPEEN
+						   | RCC_APB2ENR_AFIOEN);
 	while((RCC->APB2ENR & (temp)) != temp);
 	(void)temp;
 
 	// Reset all IO ports
 	RCC->APB2RSTR |= RCC_APB2RSTR_IOPARST | RCC_APB2RSTR_IOPBRST
-				   | RCC_APB2RSTR_IOPCRST | RCC_APB2RSTR_IOPDRST | RCC_APB2RSTR_IOPERST;
+				   | RCC_APB2RSTR_IOPCRST | RCC_APB2RSTR_IOPDRST | RCC_APB2RSTR_IOPERST
+				   | RCC_APB2RSTR_AFIORST;
 	// Release all IO ports from reset
 	RCC->APB2RSTR &= ~(RCC_APB2RSTR_IOPARST | RCC_APB2RSTR_IOPBRST
-				     | RCC_APB2RSTR_IOPCRST | RCC_APB2RSTR_IOPDRST | RCC_APB2RSTR_IOPERST);
-
-
+				     | RCC_APB2RSTR_IOPCRST | RCC_APB2RSTR_IOPDRST | RCC_APB2RSTR_IOPERST
+					 | RCC_APB2RSTR_AFIORST);
 }
 
 /*
@@ -146,6 +148,23 @@ static void prvHardwareSetupGPIO(void)
 	GPIOA->CRL |= GPIO_CRL_CNF3_1; // 10
 	// Activate pull-up resistor
 	GPIOA->ODR |= GPIO_ODR_ODR3; // 1
+
+	/* Set pin PC13 as digital input for Button Implementation */
+	// Reset PC13 control fields
+	GPIOC->CRH &= ~(GPIO_CRH_MODE13 | GPIO_CRH_CNF13);
+	// Configure PC13 as input floating (as an external pull-up resistor is used)
+	GPIOC->CRH &= ~(GPIO_CRH_MODE13); // 00
+	GPIOC->CRH |= GPIO_CRH_CNF13_0; //01
+	// Configure AFIO to enable interrupt for PC13
+	AFIO->EXTICR[3] &= ~(0xFUL << 4UL); // Manually clear this bit fields
+	AFIO->EXTICR[3] |= AFIO_EXTICR4_EXTI13_PC;
+	// Configure EXTI for falling edge detector (button pressed)
+	EXTI->FTSR |= EXTI_FTSR_TR13;
+	EXTI->RTSR &= ~(EXTI_RTSR_TR13);	// Disable rising edge detector
+	// Clear any pending interrupt in pending register
+	EXTI->PR = EXTI_PR_PR13;
+	// Unmasked interrupt request for line 13 (enable interrupt path)
+	EXTI->IMR |= EXTI_IMR_MR13; // -> Next setup the NVIC
 }
 
 /*
@@ -252,11 +271,13 @@ static void prvHardwareSetupInterrupt(void)
     // This device support 4 bits of interrupt => 16 priority level
     // 0 - highest, 15 - lowest
     NVIC_SetPriority(TIM2_IRQn, 15U);
-    NVIC_SetPriority(USART2_IRQn, 14U);
+    NVIC_SetPriority(USART2_IRQn, 10U);
+    NVIC_SetPriority(EXTI15_10_IRQn, 13U);
 
     // Enable the interrupt
     NVIC_EnableIRQ(TIM2_IRQn);	// Enable TIM2 Interrupt
     NVIC_EnableIRQ(USART2_IRQn); // Enable USART2 Interrupt
+    NVIC_EnableIRQ(EXTI15_10_IRQn); // Enable EXTI13 line interrupt (which is nested inside EXTI15_10_IRQn)
 
     // Enable in main
     //__enable_irq();
