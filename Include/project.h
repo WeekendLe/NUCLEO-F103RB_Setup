@@ -24,4 +24,7 @@
 // Function Prototype
 void vHardwareSetup(void);
 
+// ISR Prototype
+void EXTI15_10_IRQHandler(void);
+
 #endif /* PROJECT_H_ */
